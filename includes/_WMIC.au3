@@ -51,7 +51,7 @@ Func _GetCPUInfo($iFlag = 0)
 				$vName = $Obj_Item.Name
 				$sSpeed = $Obj_Item.MaxClockSpeed
 				$sArch = $Obj_Item.AddressWidth
-				$sVersion = $Obj_Item.Version
+				$sVersion = $Obj_Item.Caption
 				$sFamily = $Obj_Item.Caption
 			Next
 
@@ -199,9 +199,17 @@ Func _GetGPUInfo($iFlag = 0)
 
 			Local $Obj_Item
 			For $Obj_Item In $Col_Items
-				If $Obj_Item.Name = "Citrix Indirect Display Adapter" Then ContinueLoop
-				$sName &= $Obj_Item.Name & ", "
-				$sMemory = $Obj_Item.AdapterRAM
+				Switch $Obj_Item.Name
+					Case "Citrix Indirect Display Adapter"
+						ContinueCase
+					Case "DisplayLink USB Device"
+						ContinueCase
+					Case "Microsoft Remote Display Adapter"
+						ContinueLoop
+					Case Else
+						$sName &= $Obj_Item.Name & ", "
+						$sMemory = $Obj_Item.AdapterRAM
+				EndSwitch
 			Next
 		Else
 			Return 0
@@ -234,6 +242,20 @@ Func _GetMotherboardInfo($iFlag = 0)
 		Else
 			Return 0
 		EndIf
+		Switch $sManufacturer
+			Case "ASUSTek COMPUTER INC."
+				$sManufacturer = "ASUS"
+			Case "Gigabyte Technology Co., Ltd"
+				$sManufacturer = "Gigabyte"
+			Case "Microsoft Corporation"
+				$sManufacturer = "Microsoft"
+			Case "Micro-Star International Co., Ltd."
+				$sManufacturer = "MSI"
+			Case "Oracle Corporation"
+				$sManufacturer = "Oracle"
+			Case Else
+				;;;
+		EndSwitch
 	EndIf
 	Switch $iFlag
 		Case 0
